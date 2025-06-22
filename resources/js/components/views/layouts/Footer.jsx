@@ -22,7 +22,7 @@ export default function Footer() {
             </Link>
           </li>
         </ul>
-        <div>© 2025 InventoryPro. All rights reserved.</div>
+        <div>© 2025 Sideways. All rights reserved.</div>
       </div>
     </Layout.Footer>
   );

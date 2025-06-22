@@ -26,11 +26,12 @@ const ListsTable = () => {
     current: 1,
     pageSize: 10,
   });
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  const showConfirm = (action, id, productName) => {
+  const showConfirm = (action, ids, productNames) => {
     confirm({
-      title: `Are you sure you want to ${action} this product?`,
-      content: `Product: ${productName}`,
+      title: `Are you sure you want to ${action} ${ids.length} product${ids.length > 1 ? 's' : ''}?`,
+      content: `Product${ids.length > 1 ? 's' : ''}: ${productNames.join(', ')}`,
       okText: 'Yes',
       cancelText: 'No',
       maskClosable: true,
@@ -38,12 +39,13 @@ const ListsTable = () => {
       cancelButtonProps: { className: 'bg-[#ff1818] border-[#ff1818] hover:bg-[#ee5d5d] text-white' },
       onOk() {
         if (action === 'archive') {
-          deleteProduct(id);
+          ids.forEach(id => deleteProduct(id));
         } else if (action === 'restore') {
-          restoreProduct(id);
+          ids.forEach(id => restoreProduct(id));
         } else if (action === 'delete') {
-          forceDeleteProduct(id);
+          ids.forEach(id => forceDeleteProduct(id));
         }
+        setSelectedRowKeys([]);
       },
     });
   };
@@ -66,7 +68,7 @@ const ListsTable = () => {
   const handleModalOk = (values) => {
     const updatedValues = {
       ...values,
-      stock_available: Number(values.stock_available), // Ensure stock is a number
+      stock_available: Number(values.stock_available),
     };
     if (editingProduct) {
       updateProduct(editingProduct.id, updatedValues);
@@ -95,21 +97,28 @@ const ListsTable = () => {
   };
 
   const handleArchive = (id, productName) => {
-    showConfirm('archive', id, productName);
+    showConfirm('archive', [id], [productName]);
   };
 
   const handleRestore = (id, productName) => {
-    showConfirm('restore', id, productName);
+    showConfirm('restore', [id], [productName]);
   };
 
   const handleForceDelete = (id, productName) => {
-    showConfirm('delete', id, productName);
+    showConfirm('delete', [id], [productName]);
   };
 
-  // Get unique brand names for the filter dropdown
+  const handleBulkAction = (action) => {
+    const selectedProducts = (onlyTrashed ? archivedLists : lists).filter(product => selectedRowKeys.includes(product.id));
+    const ids = selectedProducts.map(product => product.id);
+    const productNames = selectedProducts.map(product => product.product_name);
+    if (ids.length > 0) {
+      showConfirm(action, ids, productNames);
+    }
+  };
+
   const uniqueBrands = [...new Set(lists.concat(archivedLists).map((item) => item.brand?.brand_name).filter(Boolean))];
 
-  // Filter lists based on search query and filters
   const applyFilters = (items) =>
     items.filter((item) => {
       const matchesSearch = item.product_name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -148,6 +157,13 @@ const ListsTable = () => {
       current: newPagination.current,
       pageSize: newPagination.pageSize,
     });
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (newSelectedRowKeys) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+    },
   };
 
   const columns = [
@@ -325,6 +341,41 @@ const ListsTable = () => {
             {onlyTrashed ? 'Show Active Products' : 'Show Archived Products'}
           </Button>
         </div>
+        <div className="bulk-actions">
+          {selectedRowKeys.length > 0 && (
+            <Space>
+              {!onlyTrashed ? (
+                <Button
+                  type="primary"
+                  icon={<FolderOutlined />}
+                  onClick={() => handleBulkAction('archive')}
+                  className="archive-button"
+                >
+                  Archive Selected
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    type="primary"
+                    icon={<UndoOutlined />}
+                    onClick={() => handleBulkAction('restore')}
+                    className="restore-button"
+                  >
+                    Restore Selected
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleBulkAction('delete')}
+                    className="delete-button"
+                  >
+                    Delete Selected
+                  </Button>
+                </>
+              )}
+            </Space>
+          )}
+        </div>
       </div>
 
       {error && (
@@ -349,6 +400,7 @@ const ListsTable = () => {
           />
         </div>
         <Table
+          rowSelection={rowSelection}
           dataSource={onlyTrashed ? filteredArchivedLists : filteredLists}
           columns={columns}
           rowKey="id"

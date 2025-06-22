@@ -19,11 +19,12 @@ const PageBrandsTable = () => {
     current: 1,
     pageSize: 10,
   });
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  const showConfirm = (action, id, brandName) => {
+  const showConfirm = (action, ids, brandNames) => {
     confirm({
-      title: `Are you sure you want to ${action} this brand?`,
-      content: `Brand: ${brandName}`,
+      title: `Are you sure you want to ${action} ${ids.length} brand${ids.length > 1 ? 's' : ''}?`,
+      content: `Brand${ids.length > 1 ? 's' : ''}: ${brandNames.join(', ')}`,
       okText: 'Yes',
       cancelText: 'No',
       maskClosable: true,
@@ -31,12 +32,13 @@ const PageBrandsTable = () => {
       cancelButtonProps: { className: 'border-[#48a860] text-[#48a860] hover:bg-[#e6f4ea]' },
       onOk() {
         if (action === 'archive') {
-          deleteBrand(id);
+          ids.forEach(id => deleteBrand(id));
         } else if (action === 'restore') {
-          restoreBrand(id);
+          ids.forEach(id => restoreBrand(id));
         } else if (action === 'delete') {
-          forceDeleteBrand(id);
+          ids.forEach(id => forceDeleteBrand(id));
         }
+        setSelectedRowKeys([]);
       },
     });
   };
@@ -67,18 +69,26 @@ const PageBrandsTable = () => {
   };
 
   const handleArchive = (id, brandName) => {
-    showConfirm('archive', id, brandName);
+    showConfirm('archive', [id], [brandName]);
   };
 
   const handleRestore = (id, brandName) => {
-    showConfirm('restore', id, brandName);
+    showConfirm('restore', [id], [brandName]);
   };
 
   const handleForceDelete = (id, brandName) => {
-    showConfirm('delete', id, brandName);
+    showConfirm('delete', [id], [brandName]);
   };
 
-  // Filter brands based on search query
+  const handleBulkAction = (action) => {
+    const selectedBrands = (onlyTrashed ? archivedBrands : brands).filter(brand => selectedRowKeys.includes(brand.id));
+    const ids = selectedBrands.map(brand => brand.id);
+    const brandNames = selectedBrands.map(brand => brand.brand_name);
+    if (ids.length > 0) {
+      showConfirm(action, ids, brandNames);
+    }
+  };
+
   const filteredBrands = brands.filter((brand) =>
     brand.brand_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -92,6 +102,13 @@ const PageBrandsTable = () => {
       current: newPagination.current,
       pageSize: newPagination.pageSize,
     });
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (newSelectedRowKeys) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+    },
   };
 
   const columns = [
@@ -192,6 +209,41 @@ const PageBrandsTable = () => {
             {onlyTrashed ? 'Show Active Brands' : 'Show Archived Brands'}
           </Button>
         </div>
+        <div className="bulk-actions">
+          {selectedRowKeys.length > 0 && (
+            <Space>
+              {!onlyTrashed ? (
+                <Button
+                  type="primary"
+                  icon={<FolderOutlined />}
+                  onClick={() => handleBulkAction('archive')}
+                  className="archive-button"
+                >
+                  Archive Selected
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    type="primary"
+                    icon={<UndoOutlined />}
+                    onClick={() => handleBulkAction('restore')}
+                    className="restore-button"
+                  >
+                    Restore Selected
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleBulkAction('delete')}
+                    className="delete-button"
+                  >
+                    Delete Selected
+                  </Button>
+                </>
+              )}
+            </Space>
+          )}
+        </div>
       </div>
 
       {error && (
@@ -216,6 +268,7 @@ const PageBrandsTable = () => {
           />
         </div>
         <Table
+          rowSelection={rowSelection}
           dataSource={onlyTrashed ? filteredArchivedBrands : filteredBrands}
           columns={columns}
           rowKey="id"

@@ -5,9 +5,13 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 
   .table-title {
-    color: #3a8a50;
+    color: #225b29;
     font-size: 2.2rem;
     font-weight: bold;
     margin-bottom: 28px;
@@ -16,62 +20,120 @@
 
   .table-actions-container {
     margin-bottom: 28px;
+    width: 100%;
   }
 
   .table-actions {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
     justify-content: flex-start;
     align-items: center;
-    width: 100%;
+    padding-right: 10px;
 
     .search-input {
       width: 300px;
       .ant-input {
         border-radius: 8px;
-        border-color: #48a860;
+        border-color: #225b29;
         padding: 8px 12px;
         font-size: 1rem;
         &:hover, &:focus {
-          border-color: #5abf6f;
-          box-shadow: 0 0 0 2px rgba(72, 168, 96, 0.2);
+          border-color: #3e6f43;
+          box-shadow: 0 0 0 2px rgba(34, 91, 41, 0.2);
         }
       }
       .ant-input-clear-icon {
-        color: #48a860;
+        color: #225b29;
       }
     }
 
     .add-button {
-      background-color: #48a860;
-      border-color: #3a8a50;
+      background-color: #225b29;
+      border-color: #225b29;
+      color: white;
       border-radius: 8px;
       font-weight: 500;
       padding: 8px 20px;
       font-size: 1rem;
       &:hover {
-        background-color: #5abf6f;
-        border-color: #3a8a50;
+        background-color: #3e6f43 !important;
+        border-color: #3e6f43 !important;
+        color: white !important;
       }
     }
 
     .toggle-button {
-      border-color: #48a860;
-      color: #48a860;
+      border-color: #225b29;
+      color: #225b29;
       border-radius: 8px;
       font-weight: 500;
       padding: 8px 20px;
       font-size: 1rem;
       &:hover {
-        background-color: #e6f4ea;
-        border-color: #5abf6f;
-        color: #5abf6f;
+        background-color: #e6f4ea !important;
+        border-color: #3e6f43 !important;
+        color: #3e6f43 !important;
+      }
+    }
+  }
+
+  .bulk-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+
+    .ant-btn {
+      border-radius: 8px;
+      font-weight: 500;
+      padding: 8px 20px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      height: 40px;
+
+      &.archive-button {
+        background-color: #225b29;
+        border-color: #225b29;
+        color: white;
+        &:hover {
+          background-color: #3e6f43 !important;
+          border-color: #3e6f43 !important;
+          color: white !important;
+        }
+      }
+
+      &.restore-button {
+        background-color: #3e6f43;
+        border-color: #52c41a;
+        color: white;
+        &:hover {
+          background-color: #73d13d !important;
+          border-color: #73d13d !important;
+          color: white !important;
+        }
+      }
+
+      &.delete-button {
+        background-color: #ff4d4f;
+        border-color: #ff4d4f;
+        color: white;
+        &:hover {
+          background-color: #ff7875 !important;
+          border-color: #ff7875 !important;
+          color: white !important;
+        }
+      }
+
+      .anticon {
+        margin-right: 8px;
       }
     }
   }
 
   .error-message {
+    width: 100%;
     margin-bottom: 24px;
     border-radius: 8px;
     padding: 12px;
@@ -110,10 +172,10 @@
       }
 
       .ant-table-thead > tr > th {
-        background-color: #5abf6f;
+        background-color: #3e6f43;
         color: white;
         font-weight: 600;
-        border-bottom: 2px solid #3a8a50;
+        border-bottom: 2px solid #225b29;
         padding: 16px;
         font-size: 1.1rem;
       }
@@ -133,6 +195,16 @@
 
         .ant-btn-link {
           padding: 0 12px;
+          color: #225b29 !important;
+          margin-right: 8px !important;
+          &:hover {
+            background-color: #e6f4ea !important;
+            border: 1px solid #3e6f43 !important;
+            color: #3e6f43 !important;
+          }
+          &:last-child {
+            margin-right: 0 !important;
+          }
         }
       }
     }
@@ -142,14 +214,14 @@
       margin: 16px 0;
       .ant-pagination-item {
         border-radius: 6px;
-        border-color: #48a860;
+        border-color: #225b29;
         a {
-          color: #48a860;
+          color: #225b29;
           font-size: 1rem;
         }
         &.ant-pagination-item-active {
-          background-color: #48a860;
-          border-color: #3a8a50;
+          background-color: #225b29;
+          border-color: #225b29;
           a {
             color: white;
           }
@@ -159,13 +231,13 @@
       .ant-pagination-prev, .ant-pagination-next {
         .ant-btn {
           border-radius: 6px;
-          border-color: #48a860;
-          color: #48a860;
+          border-color: #225b29;
+          color: #225b29;
           font-size: 1rem;
           &:hover {
             background-color: #e6f4ea;
-            border-color: #5abf6f;
-            color: #5abf6f;
+            border-color: #3e6f43;
+            color: #3e6f43;
           }
         }
       }
@@ -173,11 +245,11 @@
       .ant-select {
         .ant-select-selector {
           border-radius: 6px;
-          border-color: #48a860;
+          border-color: #225b29;
           padding: 4px 12px;
           font-size: 1rem;
           &:hover {
-            border-color: #5abf6f;
+            border-color: #3e6f43;
           }
         }
       }
@@ -192,23 +264,24 @@
 
 /* Modal button styles */
 .brands-table-container .ant-modal-confirm .ant-btn-primary {
-  background-color: #48a860 !important;
-  border-color: #3a8a50 !important;
+  background-color: #225b29 !important;
+  border-color: #225b29 !important;
   color: white !important;
   &:hover {
-    background-color: #5abf6f !important;
-    border-color: #3a8a50 !important;
+    background-color: #3e6f43 !important;
+    border-color: #3e6f43 !important;
     color: white !important;
   }
 }
 
 .brands-table-container .ant-modal-confirm .ant-btn-default {
-  border-color: #48a860 !important;
-  color: #48a860 !important;
+  background-color: #ff1818 !important;
+  border-color: #ff1818 !important;
+  color: white !important;
   &:hover {
-    background-color: #e6f4ea !important;
-    border-color: #5abf6f !important;
-    color: #5abf6f !important;
+    background-color: #ee5d5d !important;
+    border-color: #ee5d5d !important;
+    color: white !important;
   }
 }
 
@@ -233,6 +306,16 @@
     .toggle-button {
       width: 100%;
       padding: 8px 16px;
+    }
+  }
+
+  .bulk-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+
+    .ant-btn {
+      width: 100%;
     }
   }
 
