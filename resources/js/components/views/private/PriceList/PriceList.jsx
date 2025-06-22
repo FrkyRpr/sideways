@@ -8,7 +8,7 @@ export default function PriceList() {
           <div>
             <Header />
             <PriceListTable />
-            {/* <Footer /> */}
+            <Footer />
           </div>
         );
 }

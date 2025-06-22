@@ -8,7 +8,7 @@ export default function PageBrands() {
     <div>
       <Header />
       <PageBrandsTable />
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }
